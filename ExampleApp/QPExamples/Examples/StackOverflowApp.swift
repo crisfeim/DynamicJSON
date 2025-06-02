@@ -30,18 +30,45 @@ struct StackOverflowApp: View {
 
 // Views
 extension StackOverflowApp {
+    struct CommonMetaData: View {
+        let title: String
+        let tags: [String]
+        let date: TimeInterval
+        var body: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(try! AttributedString(markdown: title)).font(.headline)
+                
+                Text(format(tags))
+                    .font(.footnote)
+                    .bold()
+                    .foregroundColor(.accentColor)
+                
+                Text(format(date))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+        
+        func format(_ tags: [String]) -> String {
+            tags[0] + tags.dropFirst().reduce("") { $0 + ", " + $1 }
+        }
+        
+        func format(_ timestamp: TimeInterval) -> String {
+            let date = Date(timeIntervalSince1970: timestamp)
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMMM d, yyyy 'at' h:mm a"
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            return "Asked on \(formatter.string(from: date))"
+        }
+    }
+    
     func cell(_ item: JSON) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(try! AttributedString(markdown: item.title.string)).font(.headline)
+            CommonMetaData(
+                title: item.title.string,
+                tags: item.tags.array.map { $0.string },
+                date: item.creation_date.double)
             
-            Text(format(item.tags.array.map { $0.string }))
-                .font(.footnote)
-                .bold()
-                .foregroundColor(.accentColor)
-            
-            Text(format(item.creation_date.double))
-                .font(.caption)
-                .foregroundColor(.secondary)
             HStack(spacing: 24) {
                 Label(item.score.int.description, systemImage: "arrowtriangle.up.circle")
                 Label(item.answer_count.int.description, systemImage: "ellipses.bubble")
@@ -54,17 +81,11 @@ extension StackOverflowApp {
     
     func detail(_ item: JSON) -> some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(try! AttributedString(markdown: item.title.string)).font(.headline)
-                Text(format(item.tags.array.map { $0.string }))
-                    .font(.footnote)
-                    .bold()
-                    .foregroundColor(.accentColor)
-                
-                Text(format(item.creation_date.double))
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+            CommonMetaData(
+                title: item.title.string,
+                tags: item.tags.array.map { $0.string },
+                date: item.creation_date.double
+            )
             .padding(.bottom, 24)
             
             AsyncView("https://api.stackexchange.com/2.3/questions/\(item.question_id.int)?order=desc&sort=activity&site=stackoverflow&filter=withbody", keyPath: "items") { json in
