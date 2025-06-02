@@ -73,21 +73,21 @@ public enum JSON {
 	
 	// MARK: Accessors
 	
-	public var dictionary: Dictionary<String, JSON>? {
+	public var dictionary: Dictionary<String, JSON> {
 		if case .dictionary(let value) = self {
 			return value
 		}
-		return nil
+        return [:]
 	}
 	
-	public var array: Array<JSON>? {
+	public var array: Array<JSON> {
 		if case .array(let value) = self {
 			return value
 		}
-		return nil
+		return []
 	}
 	
-	public var string: String? {
+	public var string: String {
 		if case .string(let value) = self {
 			return value
 		} else if case .bool(let value) = self {
@@ -95,10 +95,10 @@ public enum JSON {
 		} else if case .number(let value) = self {
 			return value.stringValue
 		}
-		return nil
+		return ""
 	}
 	
-	public var number: NSNumber? {
+	public var number: NSNumber {
 		if case .number(let value) = self {
 			return value
 		} else if case .bool(let value) = self {
@@ -106,18 +106,18 @@ public enum JSON {
 		} else if case .string(let value) = self, let doubleValue = Double(value) {
 			return NSNumber(value: doubleValue)
 		}
-		return nil
+		return 0
 	}
 	
-	public var double: Double? {
-		return number?.doubleValue
+	public var double: Double {
+		return number.doubleValue
 	}
 	
-	public var int: Int? {
-		return number?.intValue
+	public var int: Int {
+		return number.intValue
 	}
 	
-	public var bool: Bool? {
+	public var bool: Bool {
 		if case .bool(let value) = self {
 			return value
 		} else if case .number(let value) = self {
@@ -129,8 +129,9 @@ public enum JSON {
 			(["false", "f", "no", "n", "0"].contains { value.caseInsensitiveCompare($0) == .orderedSame }) {
 			return false
 		}
-		return nil
+		return false
 	}
+    
 	
 	// MARK: Helpers
 	
@@ -172,15 +173,9 @@ extension JSON: Comparable {
 	public static func < (lhs: JSON, rhs: JSON) -> Bool {
 		switch (lhs, rhs) {
 		case (.string, .string):
-			if let lhsString = lhs.string, let rhsString = rhs.string {
-				return lhsString < rhsString
-			}
-			return false
+            return lhs.string < rhs.string
 		case (.number, .number):
-			if let lhsNumber = lhs.number, let rhsNumber = rhs.number {
-				return lhsNumber.doubleValue < rhsNumber.doubleValue
-			}
-			return false
+            return lhs.number.doubleValue < rhs.number.doubleValue
 		default: return false
 		}
 	}

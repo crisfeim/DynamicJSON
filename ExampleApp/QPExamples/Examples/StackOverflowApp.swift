@@ -14,7 +14,7 @@ struct StackOverflowApp: View {
         NavigationView {
             List {
                 AsyncView(url, keyPath: "items") { result in
-                    ForEach(result.array ?? [], id: \.title) { item in
+                    ForEach(result.array, id: \.title) { item in
                         NavigationLink(destination: detail(item), label: {
                             cell(item)
                         })
@@ -32,20 +32,20 @@ struct StackOverflowApp: View {
 extension StackOverflowApp {
     func cell(_ item: JSON) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(try! AttributedString(markdown: item.title.string ?? "")).font(.headline)
+            Text(try! AttributedString(markdown: item.title.string)).font(.headline)
             
-            Text(format((item.tags.array ?? []).map { $0.string ?? "" }))
+            Text(format(item.tags.array.map { $0.string }))
                 .font(.footnote)
                 .bold()
                 .foregroundColor(.accentColor)
             
-            Text(format(item.creation_date.double ?? 0))
+            Text(format(item.creation_date.double))
                 .font(.caption)
                 .foregroundColor(.secondary)
             HStack(spacing: 24) {
-                Label((item.score.int ?? 0).description, systemImage: "arrowtriangle.up.circle")
-                Label((item.answer_count.int ?? 0).description, systemImage: "ellipses.bubble")
-                Label((item.view_count.int ?? 0).description, systemImage: "eye")
+                Label(item.score.int.description, systemImage: "arrowtriangle.up.circle")
+                Label(item.answer_count.int.description, systemImage: "ellipses.bubble")
+                Label(item.view_count.int.description, systemImage: "eye")
             }
             .font(.caption)
             .foregroundColor(.orange)
@@ -55,25 +55,25 @@ extension StackOverflowApp {
     func detail(_ item: JSON) -> some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 8) {
-                Text(try! AttributedString(markdown: item.title.string ?? "")).font(.headline)
-                Text(format((item.tags.array ?? []).map { $0.string ?? "" }))
+                Text(try! AttributedString(markdown: item.title.string)).font(.headline)
+                Text(format(item.tags.array.map { $0.string }))
                     .font(.footnote)
                     .bold()
                     .foregroundColor(.accentColor)
                 
-                Text(format(item.creation_date.double ?? 0))
+                Text(format(item.creation_date.double))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             .padding(.bottom, 24)
             
-            AsyncView("https://api.stackexchange.com/2.3/questions/\(item.question_id.int ?? 0)?order=desc&sort=activity&site=stackoverflow&filter=withbody", keyPath: "items") { json in
-                let item = (json.array ?? [])[0]
-                let title = item.title.string ?? ""
+            AsyncView("https://api.stackexchange.com/2.3/questions/\(item.question_id.int)?order=desc&sort=activity&site=stackoverflow&filter=withbody", keyPath: "items") { json in
+                let item = json.array[0]
+                let title = item.title.string
                 Text(try! AttributedString(markdown: title))
                 
                 let owner = item.owner
-                let avatarURL = owner.profile_image.string ?? ""
+                let avatarURL = owner.profile_image.string
                 
                 HStack(spacing: 16) {
                     Spacer()
@@ -86,8 +86,8 @@ extension StackOverflowApp {
                         ProgressView()
                     }
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(owner.profile_name.string ?? "")
-                        Text(owner.reputation.int?.description ?? "")
+                        Text(owner.profile_name.string)
+                        Text(owner.reputation.int.description)
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
