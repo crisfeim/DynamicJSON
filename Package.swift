@@ -8,6 +8,6 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "QuickProto"),
-        .testTarget(name: "QuickProtoTests", dependencies: ["QuickProto"])
+        .testTarget(name: "QuickProtoTests", dependencies: ["QuickProto"], resources: [.copy("Files")])
     ]
 )
