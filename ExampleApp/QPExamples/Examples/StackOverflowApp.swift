@@ -62,21 +62,42 @@ extension StackOverflowApp {
         }
     }
     
-    func cell(_ item: JSON) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            CommonMetaData(
-                title: item.title.string,
-                tags: item.tags.array.map { $0.string },
-                date: item.creation_date.double)
-            
-            HStack(spacing: 24) {
-                Label(item.score.int.description, systemImage: "arrowtriangle.up.circle")
-                Label(item.answer_count.int.description, systemImage: "ellipses.bubble")
-                Label(item.view_count.int.description, systemImage: "eye")
+    struct Cell: View {
+        let title: String
+        let tags: [String]
+        let date: TimeInterval
+        let score: Int
+        let answerCount: Int
+        let viewCount: Int
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                CommonMetaData(
+                    title: title,
+                    tags: tags,
+                    date: date
+                )
+                
+                HStack(spacing: 24) {
+                    Label(score.description, systemImage: "arrowtriangle.up.circle")
+                    Label(answerCount.description, systemImage: "ellipses.bubble")
+                    Label(viewCount.description, systemImage: "eye")
+                }
+                .font(.caption)
+                .foregroundColor(.orange)
             }
-            .font(.caption)
-            .foregroundColor(.orange)
         }
+    }
+    
+    func cell(_ item: JSON) -> Cell {
+        Cell(
+            title: item.title.string,
+            tags: item.tags.array.map { $0.string },
+            date: item.creation_date.double,
+            score: item.score.int,
+            answerCount: item.answer_count.int,
+            viewCount: item.view_count.int
+        )
     }
     
     func detail(_ item: JSON) -> some View {
