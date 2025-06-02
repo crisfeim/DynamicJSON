@@ -251,3 +251,6 @@ extension JSON: Swift.CustomStringConvertible, Swift.CustomDebugStringConvertibl
 		return description
 	}
 }
+
+// MARK: - Data conformances
+extension JSON: Hashable {}
