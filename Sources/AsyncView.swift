@@ -31,7 +31,7 @@ extension NetworkGetter {
 
 import SwiftUI
 
-struct AsyncView<T: View>: View, NetworkGetter {
+public struct AsyncView<T: View>: View, NetworkGetter {
     
     @State var state = ResourceState.loading
     
@@ -39,13 +39,13 @@ struct AsyncView<T: View>: View, NetworkGetter {
     let keyPath: String?
     @ViewBuilder var closure: (JSON) -> T
     
-    init(_ url: URL, keyPath: String? = "results", @ViewBuilder closure: @escaping (JSON) -> T) {
+    public init(_ url: URL, keyPath: String? = "results", @ViewBuilder closure: @escaping (JSON) -> T) {
         self.url = url
         self.keyPath = keyPath
         self.closure = closure
     }
     
-    init(_ url: String, keyPath: String? = "results", @ViewBuilder closure: @escaping (JSON) -> T) {
+    public init(_ url: String, keyPath: String? = "results", @ViewBuilder closure: @escaping (JSON) -> T) {
         self.url = URL(string: url)!
         self.keyPath = keyPath
         self.closure = closure
@@ -55,7 +55,7 @@ struct AsyncView<T: View>: View, NetworkGetter {
         keyPath == nil ? JSON : JSON[keyPath!]
     }
 
-    var body: some View {
+    public var body: some View {
         switch state {
         case .loading: ProgressView().onAppear(perform: fetchData)
         case .success(let data): closure(result(data))
