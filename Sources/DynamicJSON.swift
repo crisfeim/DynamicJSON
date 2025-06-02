@@ -8,7 +8,7 @@
 import Foundation
 
 @dynamicMemberLookup
-public enum JSON {
+public enum JSON: Sendable {
 	
 	// MARK: Cases
 	
@@ -19,6 +19,13 @@ public enum JSON {
 	case bool(Bool)
 	case null
 	
+    public init(_ url: String) async throws {
+        guard let url = URL(string: url) else { throw URLError(.badURL) }
+        let (data, _) = try await URLSession.shared.data(from: url)
+        self = JSON(data)
+    }
+    
+    
 	// MARK: Dynamic Member Lookup
 	
 	public subscript(dynamicMember member: String) -> JSON {

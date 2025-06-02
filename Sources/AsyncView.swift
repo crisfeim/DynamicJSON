@@ -1,37 +1,9 @@
 // © 2025  Cristian Felipe Patiño Rojas. Created on 2/6/25.
 
 import Foundation
-
-func dp(_ msg: Any) {
-    #if DEBUG
-        print(msg)
-    #endif
-}
-
-typealias Completion<T> = (Result<T, Error>) -> Void
-
-protocol NetworkGetter {}
-extension NetworkGetter {
-    func fetchData(url: String, completion: @escaping Completion<Data>) {
-        guard let url = URL(string: url) else { return }
-
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data, error == nil else {
-                print("Error fetching data: \(error?.localizedDescription ?? "Unknown error")")
-                completion(.failure(error!))
-                return
-            }
-            
-            completion(.success(data))
-            dp(url.absoluteString + ":")
-            
-        }.resume()
-    }
-}
-
 import SwiftUI
 
-public struct AsyncView<T: View>: View, NetworkGetter {
+public struct AsyncView<T: View>: View {
     
     @State var state = ResourceState.loading
     
@@ -64,12 +36,12 @@ public struct AsyncView<T: View>: View, NetworkGetter {
     }
     
     private func fetchData() {
-        fetchData(url: url.absoluteString) { result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let data): state = .success(try! JSON(data: data))
-                case .failure(let error): state = .error(error.localizedDescription)
-                }
+        Task {
+            do {
+                let json = try await JSON(url.absoluteString)
+                state = .success(json)
+            } catch {
+                state = .error(error.localizedDescription)
             }
         }
     }
