@@ -15,9 +15,7 @@ struct StackOverflowApp: View {
             List {
                 AsyncView(url, keyPath: "items") { result in
                     ForEach(result.array, id: \.title) { item in
-                        NavigationLink(destination: detail(item), label: {
-                            cell(item)
-                        })
+                        NavigationLink(destination: detail(item), label: {cell(item)})
                     }
                 }
             }
@@ -26,9 +24,32 @@ struct StackOverflowApp: View {
             .navigationTitle("Top Questions")
         }
     }
+    
+    func cell(_ item: JSON) -> Cell {
+        Cell(
+            title: item.title.string,
+            tags: item.tags.array.map { $0.string },
+            date: item.creation_date.double,
+            score: item.score.int,
+            answerCount: item.answer_count.int,
+            viewCount: item.view_count.int
+        )
+    }
+    
+    func detail(_ item: JSON) -> some View {
+        let owner = item.owner
+        return Detail(
+            id: item.question_id.int,
+            title: item.title.string,
+            tags: item.tags.array.map { $0.string },
+            date: item.creation_date.double,
+            content: content(id:),
+            owner: Owner(avatarURL: owner.profile_image.string, profileName: owner.profile_name.string, reputation: owner.reputation.int)
+        )
+    }
 }
 
-// Views
+// UI
 extension StackOverflowApp {
     struct CommonMetaData: View {
         let title: String
@@ -89,57 +110,62 @@ extension StackOverflowApp {
         }
     }
     
-    func cell(_ item: JSON) -> Cell {
-        Cell(
-            title: item.title.string,
-            tags: item.tags.array.map { $0.string },
-            date: item.creation_date.double,
-            score: item.score.int,
-            answerCount: item.answer_count.int,
-            viewCount: item.view_count.int
-        )
+    struct Detail<Content: View>: View {
+        let id: Int
+        let title: String
+        let tags: [String]
+        let date: TimeInterval
+        let content: (Int) -> Content
+        let owner: Owner
+        var body: some View {
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 24) {
+                    CommonMetaData(
+                        title: title,
+                        tags: tags,
+                        date: date
+                    )
+                    
+                    content(id)
+                    owner
+                }
+                .padding(.horizontal)
+            }
+        }
     }
     
-    func detail(_ item: JSON) -> some View {
-        ScrollView(showsIndicators: false) {
-            CommonMetaData(
-                title: item.title.string,
-                tags: item.tags.array.map { $0.string },
-                date: item.creation_date.double
-            )
-            .padding(.bottom, 24)
-            
-            AsyncView("https://api.stackexchange.com/2.3/questions/\(item.question_id.int)?order=desc&sort=activity&site=stackoverflow&filter=withbody", keyPath: "items") { json in
-                let item = json.array[0]
-                let title = item.title.string
-                Text(try! AttributedString(markdown: title))
-                
-                let owner = item.owner
-                let avatarURL = owner.profile_image.string
-                
-                HStack(spacing: 16) {
-                    Spacer()
-                    AsyncImage(url: URL(string: avatarURL)) { image in
-                        image.resizable()
-                            .frame(width: 48, height: 48)
-                            .cornerRadius(8)
-                            .foregroundColor(.secondary)
-                    } placeholder: {
-                        ProgressView()
-                    }
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(owner.profile_name.string)
-                        Text(owner.reputation.int.description)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+    struct Owner: View {
+        let avatarURL: String?
+        let profileName: String
+        let reputation: Int
+        var body: some View {
+            HStack(spacing: 16) {
+                Spacer()
+                AsyncImage(url: avatarURL.flatMap(URL.init(string:))) { image in
+                    image.resizable()
+                        .frame(width: 48, height: 48)
+                        .cornerRadius(8)
+                        .foregroundColor(.secondary)
+                } placeholder: {
+                    ProgressView()
                 }
-                .padding(.vertical, 8)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(profileName)
+                    Text(reputation.description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
-            Spacer()
+            .padding(.vertical, 8)
         }
-        .navigationTitle("Questions")
-        .padding(8)
+    }
+    
+    func content(id: Int) -> some View {
+        AsyncView("https://api.stackexchange.com/2.3/questions/\(id)?order=desc&sort=activity&site=stackoverflow&filter=withbody", keyPath: "items") { json in
+            let item = json.array[0]
+            let title = item.title.string
+            Text(try! AttributedString(markdown: title))
+        }
     }
 }
 
