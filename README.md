@@ -1,5 +1,7 @@
 # QuickProto
 
+![](stackoverflow.gif)
+
 ### License
 
 QuickProto is based on [DynamicJSON](https://github.com/saoudrizwan/DynamicJSON) by Saoud Rizwan, originally released under the MIT License.
