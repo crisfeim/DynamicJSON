@@ -4,19 +4,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "QuickProto",
+    name: "AsyncView",
     platforms: [.iOS(.v14), .macOS(.v11)],
     products: [
         .library(
-            name: "QuickProto",
-            targets: ["QuickProto"]
+            name: "AsyncView",
+            targets: ["AsyncView"]
         )
     ],
     targets: [
-        .target(name: "QuickProto"),
+        .target(name: "AsyncView"),
         .testTarget(
-            name: "QuickProtoTests",
-            dependencies: ["QuickProto"],
+            name: "AsyncViewTests",
+            dependencies: ["AsyncView"],
             resources: [.copy("Files")]
         )
     ]

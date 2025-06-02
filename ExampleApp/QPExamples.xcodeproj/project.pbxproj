@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		40B0E3672DEDD05300855957 /* QuickProto in Frameworks */ = {isa = PBXBuildFile; productRef = 40B0E3662DEDD05300855957 /* QuickProto */; };
+		40B0E3762DEDDCBD00855957 /* AsyncView in Frameworks */ = {isa = PBXBuildFile; productRef = 40B0E3752DEDDCBD00855957 /* AsyncView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				40B0E3672DEDD05300855957 /* QuickProto in Frameworks */,
+				40B0E3762DEDDCBD00855957 /* AsyncView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,6 +38,7 @@
 			isa = PBXGroup;
 			children = (
 				40B0E3592DEDD03500855957 /* QPExamples */,
+				40B0E3742DEDDCBD00855957 /* Frameworks */,
 				40B0E3582DEDD03500855957 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -48,6 +49,13 @@
 				40B0E3572DEDD03500855957 /* QPExamples.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		40B0E3742DEDDCBD00855957 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -70,7 +78,7 @@
 			);
 			name = QPExamples;
 			packageProductDependencies = (
-				40B0E3662DEDD05300855957 /* QuickProto */,
+				40B0E3752DEDDCBD00855957 /* AsyncView */,
 			);
 			productName = QPExamples;
 			productReference = 40B0E3572DEDD03500855957 /* QPExamples.app */;
@@ -275,7 +283,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = im.crisfe.QPExamples;
+				PRODUCT_BUNDLE_IDENTIFIER = im.crisfe.AsyncViewExamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -303,7 +311,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = im.crisfe.QPExamples;
+				PRODUCT_BUNDLE_IDENTIFIER = im.crisfe.AsyncViewExamples;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -342,9 +350,10 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		40B0E3662DEDD05300855957 /* QuickProto */ = {
+		40B0E3752DEDDCBD00855957 /* AsyncView */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = QuickProto;
+			package = 40B0E3652DEDD05300855957 /* XCLocalSwiftPackageReference "../../quickprototyping" */;
+			productName = AsyncView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

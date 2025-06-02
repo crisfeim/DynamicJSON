@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import QuickProto
+import AsyncView
 
 class DynamicJSONTests: XCTestCase {
 

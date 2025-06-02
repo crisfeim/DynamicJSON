@@ -2,7 +2,7 @@
 
 
 import SwiftUI
-import QuickProto
+import AsyncView
 
 // Original UI by Matteo Manferdini:
 // https://matteomanferdini.com/swift-rest-api

@@ -3,7 +3,7 @@
 import SwiftUI
 
 @main
-struct QPExamplesApp: App {
+struct Examples: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
