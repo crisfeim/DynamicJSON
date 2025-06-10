@@ -55,9 +55,17 @@ AsyncView was built for prototyping, but production usage is possible when:
 
 ### Examples
 
+#### Stackoverflow client
+
 ![](stackoverflow.gif)
 
 Original UI took from M.Manferdini: https://matteomanferdini.com/swift-rest-api
+
+#### Movies
+
+![](movies.gif)
+
+[See source code](https://github.com/crisfeim/app-movies)
 
 ### License
 
